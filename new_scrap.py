@@ -13,9 +13,9 @@ logging.basicConfig(level=logging.INFO)
 # Credentials and URL
 LOGIN_URL = "https://hypeauditor.com/login/"
 #DISCOVERY_URL = "https://app.hypeauditor.com/recruiting/influencer-discovery"
-DISCOVERY_URL = "https://app.hypeauditor.com/recruiting/influencer-discovery?hash=8434571c5e40fe14f252973662c77a7d&search_hash=b115de6d22a3e00fb666f68642114499"
-EMAIL = "20ics067@gbu.ac.in"
-PASSWORD = "maddy@1234"
+DISCOVERY_URL = "https://app.hypeauditor.com/recruiting/influencer-discovery?hash=4f965fa12eca686b41eaeccfcaabca8f&search_hash=c688bc170db0804e9e809cc89ab2de31"
+EMAIL = "ayush@dollarpe.com"
+PASSWORD = "Aa@9300064885"
 
 # Setting up Selenium WebDriver
 driver = webdriver.Chrome()
@@ -48,14 +48,15 @@ def login_to_hypeauditor(driver):
         # Enter password
         logging.info("Entering password...")
         password_input.send_keys(PASSWORD)
-        
+    
         # Submit the login form
         logging.info("Submitting the login form...")
         password_input.send_keys(Keys.RETURN)
-        
+     
         # Debugging: Capture another screenshot after submitting the form
         #driver.save_screenshot('login_page_after_submission.png')
         
+        time.sleep(5) 
         # Wait for the discovery page to load after login
         logging.info("Waiting for discovery page to load...")
         # WebDriverWait(driver, 50).until(
@@ -75,37 +76,33 @@ def login_to_hypeauditor(driver):
     
 
 def scrape_user_data(driver):
+    time.sleep(10)
     try:
         
         logging.info("Locating the user row in the table...")
-        user_row = driver.find_element(By.CLASS_NAME, 'table__td user')
-
-        name_element = user_row.find_element(By.CSS_SELECTOR, 'span.text.--theme-default.--size-md.--weight-semibold')
-        user_name = name_element.text
-
-        id_element = user_row.find_element(By.CSS_SELECTOR, 'span.text.--theme-gray-300.--size-md.--weight-regular')
-        user_id = id_element.text
+        name = driver.find_element(By.XPATH,'//*[@id="app"]/main/div[3]/div/div/div[2]/div[4]/div/div[2]/div/div[3]/table/tbody/tr[2]/td[2]/div/div/div[1]/div/div/div/div[2]/div/div[1]/a/span')
+        print(name)
+        breakpoint()
         
-   
         user_data = {
-            "name": user_name,
-            "id": user_id
+            "name": name,
+            # "id": user_id
         }
-        
+
         with open('user_data.json', 'w') as json_file:
             json.dump(user_data, json_file, indent=4)
-        
+
         logging.info(f"Scraped data: {user_data}")
-        
+
     except Exception as e:
         logging.error(f"An error occurred: {e}")
         driver.save_screenshot('scraping_error.png')
-        raise e     
+        raise e
 
 
 try:
     login_to_hypeauditor(driver)
-  
+
     time.sleep(5)  
 
     # Call the scraping function
